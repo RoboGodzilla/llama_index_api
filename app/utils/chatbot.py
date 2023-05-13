@@ -38,32 +38,3 @@ def chatbot_generator(input_text):
     index = GPTSimpleVectorIndex.load_from_disk('index.json')
     response = index.query(input_text, response_mode="compact")
     return response.response
-
-
-def add_text(history, text):
-    history = history + [(text, None)]
-    return history, ""
-
-
-def bot(history):
-    response = chatbot_generator(history[-1][0])
-    history[-1][1] = response
-    return history
-
-
-with gr.Blocks() as demo:
-    chatbot = gr.Chatbot([], elem_id="chatbot").style(height=750)
-    
-    with gr.Row():
-        # with gr.Column(scale=0.85):
-        txt = gr.Textbox(
-            show_label=False,
-            placeholder="Ingresa tu pregunta",
-        ).style(container=False)
-        
-    txt.submit(add_text, [chatbot, txt], [chatbot, txt]).then(
-        bot, chatbot, chatbot
-    )
-
-if __name__ == "__main__":
-    demo.launch()

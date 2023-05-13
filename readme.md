@@ -10,4 +10,5 @@
 
 ## Ejecución
 - Los archivos para entrenar al bot deben estar en la el directorio /docs. Pueden ser formato PDF, TXT o CSV
-- Para iniciar el programa ejecutar el siguiente comando: ```python3 train_chatbot.py```
+- Para iniciar el chatbot con gradio ejecuta: ```python3 train_chatbot.py```
+- Para iniciar la api del chatbot ejecuta: ```uvicorn main:app```

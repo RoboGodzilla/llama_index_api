@@ -181,5 +181,7 @@ docs/*.txt
 docs/*.csv
 !docs/
 !docs/cap_1_2.pdf
+!app/media/
+app/media/*.wav
 
 # End of https://www.toptal.com/developers/gitignore/api/python
