@@ -22,7 +22,7 @@ class AudioData(BaseModel):
     name: str
 
 
-@router.get("/generate_answer")
+@router.post("/generate_answer")
 async def generate_answer(body: PrompData):
     answer = chatbot_generator(body.promp)
     audio_file = None
@@ -32,14 +32,14 @@ async def generate_answer(body: PrompData):
 
     return JSONResponse(
         content={
-            "answer": answer,
+            "answer": answer.replace("\n", ""),
             "audio_file": audio_file,
         },
         status_code=200
     )
 
 
-@router.get("/dictated")
+@router.post("/dictated")
 async def voice_dictated(audio_input: UploadFile = Form(...)):
     
     filename = "{}.wav".format(str(uuid.uuid4().hex))
@@ -55,7 +55,7 @@ async def voice_dictated(audio_input: UploadFile = Form(...)):
     )
 
 
-@router.get("/audio")
+@router.post("/audio")
 async def get_audio(audio_input: AudioData):
 
     # def stream_audio():
