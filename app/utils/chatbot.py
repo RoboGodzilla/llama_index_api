@@ -1,40 +1,44 @@
-from llama_index import (
-    SimpleDirectoryReader,
-    GPTSimpleVectorIndex,
-    LLMPredictor,
-    ServiceContext
-)
 from langchain import OpenAI
 import gradio as gr
-import os
 
-os.environ["OPENAI_API_KEY"] = ''
+from dotenv import load_dotenv
+load_dotenv()
+
+from llama_index import (
+    SimpleDirectoryReader,
+    node_parser,
+    VectorStoreIndex,
+    ServiceContext,
+    StorageContext,
+    load_index_from_storage,
+    # PromptHelper,
+)
 
 def construct_index(directory_path):
-    num_outputs = 512
-
-    llm_predictor = LLMPredictor(
-        llm=OpenAI(
-            temperature=0.7,
-            model_name="text-davinci-003",
-            max_tokens=num_outputs
-        )
-    )
-
-    service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
 
     docs = SimpleDirectoryReader(directory_path).load_data()
+    parser = node_parser.SimpleNodeParser()
+    nodes = parser.get_nodes_from_documents(docs)
 
-    index = GPTSimpleVectorIndex.from_documents(
-        docs, service_context=service_context
-    )
+    # llm = OpenAI(model="gpt-4", temperature=70, max_tokens=1024)
+    # max_input_size = 4096
+    # num_output = 1024
+    # chunk_overlap_ratio = 0.40
+    # chunk_size_limit = 1200
 
-    index.save_to_disk('index.json')
+    # prompt_helper = PromptHelper(max_input_size, num_output, chunk_overlap_ratio, chunk_size_limit=chunk_size_limit)
+
+    service_context = ServiceContext.from_defaults()
+    index = VectorStoreIndex(nodes, service_context=service_context)
+    index.storage_context.persist()
 
     return index
 
 
 def chatbot_generator(input_text):
-    index = GPTSimpleVectorIndex.load_from_disk('index.json')
-    response = index.query(input_text, response_mode="compact")
+    storage_context = StorageContext.from_defaults(persist_dir="storage")
+    index = load_index_from_storage(storage_context)
+    query_engine = index.as_query_engine(similarity_top_k=5)
+    response = query_engine.query(input_text)
+    print(response)
     return response.response
