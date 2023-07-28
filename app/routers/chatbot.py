@@ -12,7 +12,7 @@ router = APIRouter()
 class PrompData(BaseModel):
     question: str
 
-@router.post("/gen_answer")
+@router.post("/api/answer")
 async def generate_answer(body: PrompData):
     query = chatbot_generator(body.question)
 

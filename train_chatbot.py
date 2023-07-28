@@ -76,4 +76,5 @@ with gr.Blocks() as demo:
     )
 
 if __name__ == "__main__":
+    construct_index("docs")
     demo.launch()
