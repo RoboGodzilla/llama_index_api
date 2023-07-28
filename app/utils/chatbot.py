@@ -28,7 +28,7 @@ def construct_index(directory_path):
 
     # prompt_helper = PromptHelper(max_input_size, num_output, chunk_overlap_ratio, chunk_size_limit=chunk_size_limit)
 
-    service_context = ServiceContext.from_defaults()
+    service_context = ServiceContext.from_defaults( chunk_size = 1024 )
     index = VectorStoreIndex(nodes, service_context=service_context)
     index.storage_context.persist()
 
@@ -40,5 +40,4 @@ def chatbot_generator(input_text):
     index = load_index_from_storage(storage_context)
     query_engine = index.as_query_engine(similarity_top_k=5)
     response = query_engine.query(input_text)
-    print(response)
-    return response.response
+    return {"answer": response.response, "sources": response.get_formatted_sources()}

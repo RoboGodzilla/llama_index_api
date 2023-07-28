@@ -10,15 +10,13 @@ from app.utils import (
 router = APIRouter()
 
 class PrompData(BaseModel):
-    promp: str
+    question: str
 
 @router.post("/gen_answer")
 async def generate_answer(body: PrompData):
-    answer = chatbot_generator(body.promp)
+    query = chatbot_generator(body.question)
 
     return JSONResponse(
-        content={
-            "answer": answer,
-        },
+        content= query,
         status_code=200
     )
