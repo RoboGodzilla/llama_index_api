@@ -16,7 +16,7 @@ from llama_index import (
 
 def construct_index(directory_path):
 
-    docs = SimpleDirectoryReader(directory_path).load_data()
+    docs = SimpleDirectoryReader("docs/"+directory_path).load_data()
     parser = node_parser.SimpleNodeParser()
     nodes = parser.get_nodes_from_documents(docs)
 
@@ -30,13 +30,13 @@ def construct_index(directory_path):
 
     service_context = ServiceContext.from_defaults()
     index = VectorStoreIndex(nodes, service_context=service_context)
-    index.storage_context.persist()
+    index.storage_context.persist(persist_dir="storage/"+directory_path)
 
     return index
 
 
 def chatbot_generator(input_text):
-    storage_context = StorageContext.from_defaults(persist_dir="storage")
+    storage_context = StorageContext.from_defaults(persist_dir="storage/"+"singlecell")
     index = load_index_from_storage(storage_context)
     query_engine = index.as_query_engine(similarity_top_k=5)
     response = query_engine.query(input_text)
@@ -76,5 +76,4 @@ with gr.Blocks() as demo:
     )
 
 if __name__ == "__main__":
-    construct_index("docs")
     demo.launch()

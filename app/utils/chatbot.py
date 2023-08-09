@@ -16,7 +16,7 @@ from llama_index import (
 
 def construct_index(directory_path):
 
-    docs = SimpleDirectoryReader(directory_path).load_data()
+    docs = SimpleDirectoryReader("docs/"+directory_path).load_data()
     parser = node_parser.SimpleNodeParser()
     nodes = parser.get_nodes_from_documents(docs)
 
@@ -36,7 +36,7 @@ def construct_index(directory_path):
 
 
 def chatbot_generator(input_text):
-    storage_context = StorageContext.from_defaults(persist_dir="storage")
+    storage_context = StorageContext.from_defaults(persist_dir="storage/"+"singlecell")
     index = load_index_from_storage(storage_context)
     query_engine = index.as_query_engine(similarity_top_k=5)
     response = query_engine.query(input_text)
