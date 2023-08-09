@@ -8,6 +8,7 @@ from llama_index import (
     SimpleDirectoryReader,
     node_parser,
     VectorStoreIndex,
+    ListIndex,
     ServiceContext,
     StorageContext,
     load_index_from_storage,
@@ -29,7 +30,7 @@ def construct_index(directory_path):
     # prompt_helper = PromptHelper(max_input_size, num_output, chunk_overlap_ratio, chunk_size_limit=chunk_size_limit)
 
     service_context = ServiceContext.from_defaults()
-    index = VectorStoreIndex(nodes, service_context=service_context)
+    index = ListIndex(nodes, service_context=service_context)
     index.storage_context.persist(persist_dir="storage/"+directory_path)
 
     return index
