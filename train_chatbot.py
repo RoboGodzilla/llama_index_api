@@ -8,7 +8,6 @@ from llama_index import (
     SimpleDirectoryReader,
     node_parser,
     VectorStoreIndex,
-    ListIndex,
     ServiceContext,
     StorageContext,
     load_index_from_storage,
@@ -30,7 +29,7 @@ def construct_index(directory_path):
     # prompt_helper = PromptHelper(max_input_size, num_output, chunk_overlap_ratio, chunk_size_limit=chunk_size_limit)
 
     service_context = ServiceContext.from_defaults()
-    index = ListIndex(nodes, service_context=service_context)
+    index = VectorStoreIndex(nodes, service_context=service_context)
     index.storage_context.persist(persist_dir="storage/"+directory_path)
 
     return index
@@ -39,7 +38,7 @@ def construct_index(directory_path):
 def chatbot_generator(input_text):
     storage_context = StorageContext.from_defaults(persist_dir="storage/"+"singlecell")
     index = load_index_from_storage(storage_context)
-    query_engine = index.as_query_engine(similarity_top_k=5)
+    query_engine = index.as_query_engine(similarity_top_k=5, response_mode="compact")
     response = query_engine.query(input_text)
     print(response)
     return response.response
