@@ -11,8 +11,8 @@ from llama_index import (
     ServiceContext,
     StorageContext,
     load_index_from_storage,
-    # PromptHelper,
 )
+from llama_index.prompts import Prompt
 
 def construct_index(directory_path):
 
@@ -30,14 +30,15 @@ def construct_index(directory_path):
 
     service_context = ServiceContext.from_defaults( chunk_size = 1024 )
     index = VectorStoreIndex(nodes, service_context=service_context)
-    index.storage_context.persist()
+    index.storage_context.persist(persist_dir="storage/"+directory_path)
 
     return index
 
 
-def chatbot_generator(input_text):
+def chatbot_generator(input_text, prompt_text):
+    replacement_prompt = Prompt(prompt_text)
     storage_context = StorageContext.from_defaults(persist_dir="storage/"+"singlecell")
     index = load_index_from_storage(storage_context)
-    query_engine = index.as_query_engine(similarity_top_k=5,  response_mode="compact")
+    query_engine = index.as_query_engine(similarity_top_k=5,  response_mode="compact", text_qa_template=replacement_prompt)
     response = query_engine.query(input_text)
     return {"answer": response.response, "sources": response.get_formatted_sources()}
