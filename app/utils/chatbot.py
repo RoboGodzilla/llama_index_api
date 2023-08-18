@@ -36,9 +36,13 @@ def construct_index(directory_path):
 
 
 def chatbot_generator(input_text, prompt_text):
-    replacement_prompt = Prompt(prompt_text)
     storage_context = StorageContext.from_defaults(persist_dir="storage/"+"singlecell")
     index = load_index_from_storage(storage_context)
-    query_engine = index.as_query_engine(similarity_top_k=5,  response_mode="compact", text_qa_template=replacement_prompt)
+    if prompt_text != "":
+        replacement_prompt = Prompt(prompt_text)
+        query_engine = index.as_query_engine(similarity_top_k=5, text_qa_template=replacement_prompt)
+    else:
+        replacement_prompt = None
+        query_engine = index.as_query_engine(similarity_top_k=5)
     response = query_engine.query(input_text)
-    return {"answer": response.response, "sources": response.get_formatted_sources()}
+    return {"answer": response.response, "sources": response.get_formatted_sources(length=400)}
