@@ -13,8 +13,8 @@ from app.utils import (
 router = APIRouter()
 
 # user uploads multiple files to a directory
-@router.post("/uploadfile/")
-async def create_upload_file(directory_path: str, files: list[UploadFile]):
+@router.post("/uploadfiles")
+async def create_upload_file( files: list[UploadFile], directory_path: str = "" ):
     if directory_path == "":
         return JSONResponse(
             status_code=400,
