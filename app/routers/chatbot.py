@@ -37,10 +37,11 @@ async def create_upload_file( files: list[UploadFile], directory_path: str = "" 
 class PrompData(BaseModel):
     question: str
     prompt: str
+    document: str
 
 @router.post("/api/answer")
 async def generate_answer(body: PrompData):
-    query = chatbot_generator(body.question, body.prompt)
+    query = chatbot_generator(body.question, body.prompt, body.document)
 
     return JSONResponse(
         content= query,

@@ -26,8 +26,8 @@ def construct_index(directory_path):
     return index
 
 
-def chatbot_generator(input_text, prompt_text):
-    storage_context = StorageContext.from_defaults(persist_dir="storage/"+"singlecell")
+def chatbot_generator(input_text, prompt_text, directory_path):
+    storage_context = StorageContext.from_defaults(persist_dir="storage/"+directory_path)
     index = load_index_from_storage(storage_context)
     if prompt_text != "":
         replacement_prompt = Prompt(prompt_text)
