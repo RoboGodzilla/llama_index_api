@@ -10,7 +10,6 @@ from llama_index import (
     load_index_from_storage,
 )
 from llama_index.prompts import Prompt
-from llama_index.llms import OpenAI
 
 def construct_index(directory_path):
 
@@ -18,8 +17,7 @@ def construct_index(directory_path):
     parser = node_parser.SimpleNodeParser()
     nodes = parser.get_nodes_from_documents(docs)
 
-    llm = OpenAI(model="gpt-4", temperature=0.7, max_tokens=512)
-    service_context = ServiceContext.from_defaults( llm=llm )
+    service_context = ServiceContext.from_defaults()
     index = VectorStoreIndex(nodes, service_context=service_context)
     index.storage_context.persist(persist_dir="storage/"+directory_path)
 
