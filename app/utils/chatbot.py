@@ -14,11 +14,8 @@ from llama_index.prompts import Prompt
 def construct_index(directory_path):
 
     docs = SimpleDirectoryReader("docs/"+directory_path).load_data()
-    parser = node_parser.SimpleNodeParser()
-    nodes = parser.get_nodes_from_documents(docs)
-
     service_context = ServiceContext.from_defaults()
-    index = VectorStoreIndex(nodes, service_context=service_context)
+    index = VectorStoreIndex.from_documents(docs, service_context=service_context)
     index.storage_context.persist(persist_dir="storage/"+directory_path)
 
     return index
