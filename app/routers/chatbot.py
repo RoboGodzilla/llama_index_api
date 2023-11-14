@@ -4,10 +4,7 @@ from fastapi import APIRouter, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from app.utils import (
-    construct_index,
-    chatbot_generator
-)
+from app.utils.assistants import construct_index, chatbot_generator
 
 
 router = APIRouter()
@@ -24,7 +21,7 @@ async def create_upload_file( files: list[UploadFile], directory_path: str = "" 
         os.makedirs("docs/"+directory_path)
 
     for file in files:
-        with open("docs/"+directory_path+"/"+file.filename, "wb") as buffer:
+        with open("docs/"+directory_path+"/"+str(file.filename), "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
     construct_index(directory_path)
