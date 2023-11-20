@@ -61,7 +61,9 @@ def construct_index(directory_path):
 
         # Store the assistant ID for future reference
         assistant_id = assistant.id
-        with open("storage/" + directory_path + "/assistant_id.txt", "w") as f:
+        if not os.path.exists("storage/" + directory_path):
+            os.makedirs("storage/" + directory_path)
+        with open("storage/"+directory_path+"/assistant_id.txt", "w") as f:
             f.write(assistant_id)
 
 def chatbot_generator(input_text, prompt_text, directory_path):
@@ -131,5 +133,4 @@ def chatbot_generator(input_text, prompt_text, directory_path):
     message_value += '\n' + '\n'.join(citations)
 
     # Print the response
-    print(messages)
     return {"answer": message_value, "sources": annotations} # type: ignore
