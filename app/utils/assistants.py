@@ -96,13 +96,15 @@ def chatbot_generator(input_text, prompt_text, directory_path):
         run.id,
         thread_id=thread.id,
     )
-    while response.status == "in_progress":
+    while response.status != "completed":
         response = client.threads.runs.retrieve(
             run.id,
             thread_id=thread.id,
         )
         print(response.status)
-        time.sleep(0.2)
+        if response.status != 'in_progress':
+            break
+        time.sleep(0.3)
 
     messages = client.threads.messages.list(
         thread_id=thread.id

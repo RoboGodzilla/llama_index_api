@@ -1,1 +1,1 @@
-from .chatbot import chatbot_generator, construct_index
+from .assistants import chatbot_generator, construct_index
