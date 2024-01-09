@@ -110,11 +110,9 @@ def chatbot_generator(input_text, prompt_text, directory_path):
         thread_id=thread.id
     )
     message = messages.data[0]
-    message_content = message.content[0]
-    if message_content.type == "text": message_value = message_content.text.value
-    else: message_value = ""
-    if message_content.type == "text": annotations = message_content.text.annotations
-    else: annotations = []
+    message_content = message.content[0].text # type: ignore
+    message_value = message_content.value
+    annotations = message_content.annotations
     citations = []
 
     # Iterate over the annotations and add footnotes
@@ -131,8 +129,5 @@ def chatbot_generator(input_text, prompt_text, directory_path):
             citations.append(f'[{index}] Click <here> to download {cited_file.filename}')
             # Note: File download functionality not implemented above for brevity
 
-    # Add footnotes to the end of the message before displaying to user
-    message_value += '\n' + '\n'.join(citations)
-
     # Print the response
-    return {"answer": message_value, "sources": annotations} # type: ignore
+    return {"answer": message_value, "sources": citations} # type: ignore
